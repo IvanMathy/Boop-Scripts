@@ -7,14 +7,5 @@
         "output": {
             "fullText": "Hello World\n1234 &#x26;&#xE9;&#x22; &#x1F973; &#x3C;/div&#x3E; &#x2265;"
         }
-    },
-    {
-        "name": "Encode characteres",
-        "input": {
-            "fullText": "Hello Woreld\n1234 &é\" 🥳 </div> ≥"
-        },
-        "output": {
-            "fullText": "Hello World\n1234 &#x26;&#xE9;&#x22; &#x1F973; &#x3C;/div&#x3E; &#x2265;"
-        }
     }
 ]
