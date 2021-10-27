@@ -28,6 +28,7 @@ let package = Package(
             resources: [.copy("scripts")]),
         .testTarget(
             name: "BoopScriptsTests",
-            dependencies: ["BoopScripts"]),
+            dependencies: ["BoopScripts"],
+            resources: [.copy("tests")]),
     ]
 )

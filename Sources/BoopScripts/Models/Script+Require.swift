@@ -78,7 +78,7 @@ extension Script {
     private func url(for path: String) -> URL? {
         if path.starts(with: Script.boopPrefix) {
             let fileName = String(path.dropFirst(Script.boopPrefix.count).dropLast(3))
-            return Bundle.main.url(forResource: fileName, withExtension: Script.moduleExt, subdirectory: "scripts/lib")
+            return Bundle.module.url(forResource: fileName, withExtension: Script.moduleExt, subdirectory: "scripts/lib")
         }
         
         guard
