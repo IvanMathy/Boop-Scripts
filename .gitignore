@@ -106,3 +106,4 @@ dist
 # SwiftPM
 
 .swiftpm
+.build

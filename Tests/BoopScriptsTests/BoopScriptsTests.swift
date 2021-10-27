@@ -53,13 +53,22 @@ final class BoopScriptsTests: XCTestCase {
     }
     
     func runTests(script: Script) {
-        if let testDefinitionURL = Bundle.module.url(forResource: String(script.url.lastPathComponent.dropLast(3)), withExtension: "json", subdirectory: "tests") {
+        
+        let fileName = String(script.url.lastPathComponent.dropLast(3))
+        
+        print("├─ \(script.name ?? fileName)")
+        
+        guard let testDefinitionURL = Bundle.module.url(forResource: fileName, withExtension: "json", subdirectory: "tests") else {
+            
+            print("│  ├─ ⏺ No test provided, skipping. ")
+            print("│")
+            return
+        }
             
             
             let jsonData = try! Data(contentsOf: testDefinitionURL)
             let testDefinitions = try! JSONDecoder().decode([TestDefinition].self, from: jsonData)
             
-            print("▶️ - Testing \(script.name)")
             
             var success = 0
             var failure = 0
@@ -70,10 +79,10 @@ final class BoopScriptsTests: XCTestCase {
                 script.run(with: execution)
                 
                 if(execution.fullText == test.output.fullText) {
-                    print("├─ ✅ \(test.name)")
+                    print("│  ├─ ✅ \(test.name)")
                     success += 1
                 } else {
-                    print("├─ 🛑 \(test.name)")
+                    print("│  ├─ 🛑 \(test.name)")
                     
                     print("│  │   Expected output:\n\(test.output.fullText) \nGot:\n\(execution.fullText ?? "No Output")".components(separatedBy: "\n").joined(separator: "\n│  │   "))
                     
@@ -81,12 +90,10 @@ final class BoopScriptsTests: XCTestCase {
                 }
             }
             
-            print("│ ")
             print("│ \(testDefinitions.count) tests - \(success) succesful, \(failure) failures")
+        
+            print("│")
             
-            
-        } else {
-            print("No test for ", script.name)
-        }
+        
     }
 }
