@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Basic Text",
+        "input": {
+            "fullText": "Howdy y'all!"
+        },
+        "output": {
+            "fullText": "c6e2041e50df90027d455b95d2ef911b"
+        }
+    },
+    {
+        "name": "Multiline",
+        "input": {
+            "fullText": "Hello there!\nI hope you're doing well!\nThanks for reading my test!"
+        },
+        "output": {
+            "fullText": "7bb51dd983dea533d9035862086ccc2c"
+        }
+    }
+]
