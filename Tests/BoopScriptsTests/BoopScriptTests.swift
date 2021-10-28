@@ -20,6 +20,12 @@ class TestScriptDelegate: ScriptDelegate {
 
 final class BoopScriptTests: XCTestCase {
     
+    var output = ""
+    
+    func print(_ value: String) {
+        output = output + "\n" + value
+    }
+    
     override class var defaultTestSuite: XCTestSuite {
         let testClass = self as XCTestCase.Type
         let testSuite = XCTestSuite(name: "Boop Scripts")
@@ -61,12 +67,18 @@ final class BoopScriptTests: XCTestCase {
         get { return script.name ?? fileName }
     }
     
+    override func tearDown() {
+        Swift.print(output)
+    }
     
     func testScript() {
         
+        self.print("├─ \(script.name ?? fileName)")
+        
         guard let testDefinitionURL = Bundle.module.url(forResource: fileName, withExtension: "json", subdirectory: "tests") else {
             
-            print("⏺ No test provided, skipping. ")
+            self.print("│  ├─ ⏺ No test provided, skipping. ")
+            self.print("│")
             return
         }
             
@@ -74,18 +86,35 @@ final class BoopScriptTests: XCTestCase {
             let jsonData = try! Data(contentsOf: testDefinitionURL)
             let testDefinitions = try! JSONDecoder().decode([TestDefinition].self, from: jsonData)
             
+        var success = 0
+        var failure = 0
         
-        XCTContext.runActivity(named: self.name) { _ ->
-            Void in
             
             for test in testDefinitions {
                 let execution = ScriptExecution(selection: nil, fullText: test.input.fullText, script: script, insertIndex: 0)
                 
                 script.run(with: execution)
-                XCTAssertEqual(execution.fullText, test.output.fullText, test.name)
-            }
+                if(execution.fullText == test.output.fullText) {
+                    self.print("│  ├─ ✅ \(test.name)")
+                    success += 1
+                } else {
+                    self.print("│  ├─ 🛑 \(test.name)")
+                    
+                    self.print("│  │   Expected output:\n\(test.output.fullText) \nGot:\n\(execution.fullText ?? "No Output")".components(separatedBy: "\n").joined(separator: "\n│  │   "))
+                    
+                    failure += 1
+                }
                 
-        }
+                XCTAssertEqual(execution.fullText, test.output.fullText, test.name)
+                
+                
+            }
+            
+        self.print("│ \(testDefinitions.count) tests - \(success) succesful, \(failure) failed")
+        
+        self.print("│")
+                
+        
         
     }
 }
